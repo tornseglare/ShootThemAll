@@ -28,3 +28,11 @@
 
 /build:Art/snail.png
 /build:Art/spontaneous.png
+
+#Settings for font.
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+
+/build:Font.spritefont
