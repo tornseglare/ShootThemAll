@@ -19,8 +19,7 @@
 #Settings which will be used for most build-commands further down.
 /importer:TextureImporter
 /processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
+/processorParam:ColorKeyEnabled=False
 /processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
@@ -28,3 +27,4 @@
 /processorParam:TextureFormat=Color
 
 /build:Art/snail.png
+/build:Art/spontaneous.png

@@ -50,8 +50,16 @@ namespace ShootThemAll
         {
             GraphicsDevice.Clear(Color.Green);
 
-            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Opaque);
-            spriteBatch.Draw(Art.Snail, Vector2.Zero, null, color, 0f, Vector2.Zero, 1f, 0, 0);
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+            Random random = new Random();
+            Vector2 pos = new();
+
+            for (int i = 0; i < 10; i++)
+            {
+                pos.X = random.Next(400);
+                pos.Y = random.Next(400);
+                spriteBatch.Draw(Art.Skull, pos, null, color, 0f, Vector2.Zero, 0.5f, 0, 0);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
