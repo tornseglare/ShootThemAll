@@ -5,6 +5,12 @@ Each version can be found as a git tag, making it easy to get started if you are
 
 This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: https://github.com/MonoGame/MonoGame.Samples
 
+# V1.3
+Drawing squares with changing transparency (alpha) using the NonPremultiplied BlendState.
+
+Good reading:
+https://community.monogame.net/t/how-to-make-part-of-texture-transparent-with-setdata/14555
+
 # V1.2
 Drawing transparent image multiple times. Drawing text. 
 Displays framerate, increases number of images drawn over time to see when framerate drops.

@@ -17,8 +17,9 @@ namespace ShootThemAll
             Snail = content.Load<Texture2D>("Art/snail");
             Skull = content.Load<Texture2D>("Art/spontaneous");
 
-            Pixel = new Texture2D(Snail.GraphicsDevice, 1, 1);
-            Pixel.SetData(new[] { Color.White });
+            Pixel = new Texture2D(Snail.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            Color[] colorData = new[] { new Color(255, 255, 255, 255) };
+            Pixel.SetData<Color>(colorData);
 
             Font = content.Load<SpriteFont>("Font");
         }
