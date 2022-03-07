@@ -5,6 +5,10 @@ Each version can be found as a git tag, making it easy to get started if you are
 
 This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: https://github.com/MonoGame/MonoGame.Samples
 
+# V1.4
+Fullscreen mode with different resolutions, windowed mode with different sizes and free resizing. 
+See lines 42-46 in ShootThemAllGame.cs, they let you test fullscreen and windowed mode quickly.
+
 # V1.3
 Drawing squares with changing transparency (alpha) using the NonPremultiplied BlendState.
 
