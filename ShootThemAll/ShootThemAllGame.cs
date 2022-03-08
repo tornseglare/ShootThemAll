@@ -37,13 +37,15 @@ namespace ShootThemAll
             graphics.PreparingDeviceSettings += Graphics_PreparingDeviceSettings;
             graphics.DeviceDisposing += Graphics_DeviceDisposing;
 
-            SupportedDisplayModes();
+            // SupportedDisplayModes();
 
-            // Please note: When going fullscreen, make sure you select one of the available resolutions given in SupportedDisplayModes(), otherwise it will choose the closest match for you and you wont know which.
+            DisplayMode displayMode = GetDisplayModeBestMatch(1400, 900);
+            GoFullScreen(displayMode);
+
             //GoFullScreenNativeResolution();
             //GoFullScreenWithResolution(720, 400);
             //GoWindowed();
-            GoWindowed(400, 400);
+            //GoWindowed(400, 400);
         }
 
         /// <summary>
@@ -94,11 +96,20 @@ namespace ShootThemAll
         }
 
         /// <summary>
+        /// Go fullscreen with the given backbuffer format and resolution. Use GetDisplayModeBestMatch() to get a proper DisplayMode object.
+        /// </summary>
+        public void GoFullScreen(DisplayMode displayMode)
+        {
+            graphics.PreferredBackBufferFormat = displayMode.Format;
+            GoFullScreenWithResolution(displayMode.Width, displayMode.Height);
+        }
+
+        /// <summary>
         /// Writes out your supported resolutions in debug window.
         /// </summary>
-        public void SupportedDisplayModes()
+        public static void SupportedDisplayModes()
         {
-            foreach (var sdm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+            foreach (DisplayMode sdm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
             {
                 int w = sdm.Width;
                 int h = sdm.Height;
@@ -107,6 +118,34 @@ namespace ShootThemAll
 
                 Debug.WriteLine("Width: " + w + " Height: " + h + " Aspect: " + a + " Format: " + f);
             }
+        }
+
+        /// <summary>
+        /// Get the best matching DisplayMode the system can give you. 
+        /// </summary>
+        public static DisplayMode GetDisplayModeBestMatch(int width, int height)
+        {
+            // Fetch the first one matching width and height.
+            DisplayMode sdMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.Where(dm => dm.Width >= width && dm.Height >= height).OrderBy(dm => dm.Width).ThenBy(dm => dm.Height).FirstOrDefault();
+
+            if (sdMode == null)
+            {
+                // Either the requested width or the height are too large. Let's find a dmode matching at least the height or the width.
+                sdMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.Where(dm => dm.Width >= width || dm.Height >= height).OrderBy(dm => dm.Width).ThenBy(dm => dm.Height).FirstOrDefault();
+
+                if (sdMode == null)
+                {
+                    // Neither requested width or height can be satisfied, lets just find the display mode with the largest width and height.
+                    sdMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.OrderByDescending(dm => dm.Width).ThenByDescending(dm => dm.Height).FirstOrDefault();
+
+                    if (sdMode == null)
+                    {
+                        throw new Exception("No display modes available.");
+                    }
+                }
+            }
+
+            return sdMode;
         }
 
         /// <summary>
