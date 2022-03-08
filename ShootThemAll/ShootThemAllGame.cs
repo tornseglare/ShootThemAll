@@ -39,12 +39,12 @@ namespace ShootThemAll
 
             // SupportedDisplayModes();
 
-            DisplayMode displayMode = GetDisplayModeBestMatch(1400, 900);
-            GoFullScreen(displayMode);
+            //DisplayMode displayMode = GetDisplayModeBestMatch(1400, 900);
+            //GoFullScreen(displayMode);
 
             //GoFullScreenNativeResolution();
             //GoFullScreenWithResolution(720, 400);
-            //GoWindowed();
+            GoWindowed();
             //GoWindowed(400, 400);
         }
 
@@ -153,9 +153,6 @@ namespace ShootThemAll
         /// </summary>
         public void GoWindowed()
         {
-            this.Window.Position = new Point(42, 42);
-            this.Window.AllowUserResizing = true;
-
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = windowedWidth;
             graphics.PreferredBackBufferHeight = windowedHeight;
@@ -165,6 +162,9 @@ namespace ShootThemAll
             graphics.PreferredBackBufferWidth = windowedWidth;
             graphics.PreferredBackBufferHeight = windowedHeight;
             graphics.ApplyChanges();
+
+            Window.Position = new Point(42, 42);
+            Window.AllowUserResizing = true;
 
             // Please note that GraphicsAdapter.DefaultAdapter.CurrentDisplayMode is the monitor resolution, not the resolution of the window.
             Debug.WriteLine("Current, Width: " + GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width + " vs preferred " + graphics.PreferredBackBufferWidth);
