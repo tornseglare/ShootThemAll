@@ -46,6 +46,13 @@ namespace ShootThemAll
             //GoFullScreenWithResolution(720, 400);
             GoWindowed();
             //GoWindowed(400, 400);
+
+            // To allow for higher fps than 60, set to false. This means the screen will be redrawn as fast as possible, possibly several thousand frames per second, so you need to think about it. :-)
+            IsFixedTimeStep = false;
+
+            // Turn off the vertical sync to acheive even higher framerates at the cost of tearing issues.
+            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -246,7 +253,7 @@ namespace ShootThemAll
         protected override void Update(GameTime gameTime)
         {
             // Increase the number of skulls until the framerate drops. 
-            count += 1;
+            count += 10;
 
             // Cycle the alpha between 0 and 255.
             if (growing)
