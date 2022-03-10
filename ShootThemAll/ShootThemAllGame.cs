@@ -277,7 +277,7 @@ namespace ShootThemAll
             //  sourceBlend gets set to SourceAlpha - Each component of the color is multiplied by the alpha value of the source.
             //  destinationBlend gets set to InverseSourceAlpha - Each component of the color is multiplied by the inverse of the alpha value of the source.
             // 
-            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.NonPremultiplied);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             // Draw a few resized pixels and multiply with the cycling alpha.
             int side = 32;
