@@ -10,18 +10,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShootThemAll
 {
+    public class PositionAndScale
+    {
+        public Vector2 position;
+        public float scale;
+    }
+
     public class ShootThemAllGame : Game
     {
         readonly GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        int count = 10;
 
         bool growing = false;
         int alpha = 255;
 
         int windowedWidth = 800;
         int windowedHeight = 600;
+
+        Random randomizer = new Random();
+        List<PositionAndScale> objects = new();
 
         public ShootThemAllGame()
         {
@@ -252,8 +259,13 @@ namespace ShootThemAll
 
         protected override void Update(GameTime gameTime)
         {
-            // Increase the number of skulls until the framerate drops. 
-            count += 10;
+            // Add a new skull every now and then with random scale to see the mipmapping in action.
+            // Try to set /processorParam:GenerateMipmaps to False in the file ShootThemAll.mgcb to see how pixelated they get when drawn small.
+            if (randomizer.Next(0, 100) < 1)
+            {
+                PositionAndScale obj = new() { position = new(randomizer.Next(0, windowedWidth), randomizer.Next(0, windowedHeight)), scale = randomizer.NextSingle() };
+                objects.Add(obj);
+            }
 
             // Cycle the alpha between 0 and 255.
             if (growing)
@@ -300,19 +312,14 @@ namespace ShootThemAll
                 spriteBatch.Draw(Art.Pixel, targetRect, null, color);
             }
 
-            Random random = new Random();
-            Vector2 pos = new();
-
-            for (int i = 0; i < count; i++)
+            foreach(PositionAndScale obj in objects)
             {
-                pos.X = 32 + random.Next(600);
-                pos.Y = 32 + random.Next(300);
-                spriteBatch.Draw(Art.Skull, pos, null, Color.White, 0f, Vector2.Zero, 0.5f, 0, 0);
+                spriteBatch.Draw(Art.Skull, obj.position, null, Color.White, 0f, Vector2.Zero, obj.scale, SpriteEffects.None, 0);
             }
 
             // Each frame takes a certain amount of time, normally around 16ms. How many times a second is that? 1000 / 16 =~ 60 times a second. That is the FPS, frames per second.
             double fps = 1000 / gameTime.ElapsedGameTime.TotalMilliseconds;
-            string text = "FPS: " + (int)fps + " ObjCount: " + count;
+            string text = "FPS: " + (int)fps + " ObjCount: " + objects.Count;
             Vector2 textPos = new(20, 20);
             spriteBatch.DrawString(Art.Font, text, textPos, Color.White);
 
