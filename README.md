@@ -7,6 +7,15 @@ This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: ht
 
 Please note that you must install .NET Core 3.1 Runtime (LTS) for monogame to compile.
 
+# V1.5
+This version has several smaller (and bigger) changes:
+* GetDisplayModeBestMatch(w,h) which gives the lowest available resolution equalling or larger than the requested w,h, or the largest possible resolution if w,h cannot be satisfied.
+* Window can now be positioned. 
+* Disabled PublishReadyToRun and TieredCompilation to improve runtime speed.
+* Using SpriteSortMode.Deferred instead of Texture since you typically want the sprites drawn on top of each other in the order you call Draw() on each.
+* Setting IsFixedTimeStep to false means the screen gets redrawn as fast as possible instead of a maximum of 60fps.
+* Enabled mipmapping. Created an array of objects with position and scale to show the effect of scaling down a texture with mipmapping enabled.
+
 # V1.4
 Fullscreen mode with different resolutions, windowed mode with different sizes and free resizing. 
 See lines 42-46 in ShootThemAllGame.cs, they let you test fullscreen and windowed mode quickly.
