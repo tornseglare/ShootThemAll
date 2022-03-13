@@ -17,6 +17,9 @@ namespace ShootThemAll
             Snail = content.Load<Texture2D>("Art/snail");
             Skull = content.Load<Texture2D>("Art/spontaneous");
 
+            // If you want to build the content during startup. Make sure the snail.png is set to Copy. 
+            //Snail = Texture2D.FromFile(Skull.GraphicsDevice, "Content/Art/snail.png");
+
             Pixel = new Texture2D(Snail.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             Color[] colorData = new[] { new Color(255, 255, 255, 255) };
             Pixel.SetData<Color>(colorData);
