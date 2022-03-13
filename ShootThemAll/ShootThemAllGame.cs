@@ -152,7 +152,10 @@ namespace ShootThemAll
                 if (sdMode == null)
                 {
                     // Neither requested width or height can be satisfied, lets just find the display mode with the largest width and height.
-                    sdMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.OrderByDescending(dm => dm.Width).ThenByDescending(dm => dm.Height).FirstOrDefault();
+                    sdMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.
+                        OrderByDescending(dm => dm.Width).
+                        ThenByDescending(dm => dm.Height).
+                        FirstOrDefault();
 
                     if (sdMode == null)
                     {
@@ -263,7 +266,8 @@ namespace ShootThemAll
         {
             // Add a new skull every now and then with random scale to see the mipmapping in action.
             // Try to set /processorParam:GenerateMipmaps to False in the file ShootThemAll.mgcb to see how pixelated they get when drawn small.
-            if (randomizer.Next(0, 100) < 1)
+            for(int i=0;i<10;i++)
+            //if (randomizer.Next(0, 100) < 100)
             {
                 PositionAndScale obj = new() { position = new(randomizer.Next(0, windowedWidth), randomizer.Next(0, windowedHeight)), scale = randomizer.NextSingle() };
                 objects.Add(obj);
@@ -323,7 +327,7 @@ namespace ShootThemAll
             double fps = 1000 / gameTime.ElapsedGameTime.TotalMilliseconds;
             string text = "FPS: " + (int)fps + " ObjCount: " + objects.Count;
             Vector2 textPos = new(20, 20);
-            spriteBatch.DrawString(Art.Font, text, textPos, Color.White);
+            spriteBatch.DrawString(Art.Font, text, textPos, Color.DarkBlue);
 
             spriteBatch.End();
 
