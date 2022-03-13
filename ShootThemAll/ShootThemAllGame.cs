@@ -54,10 +54,12 @@ namespace ShootThemAll
             GoWindowed();
             //GoWindowed(400, 400);
 
-            // To allow for higher fps than 60, set to false. This means the screen will be redrawn as fast as possible, possibly several thousand frames per second, so you need to think about it. :-)
+            // Default limit is set to 60 fps. To allow for higher fps than 60, set to false. 
+            // Set to false the fps is only limited by the screen's refresh rate, in my case 160 fps.
             IsFixedTimeStep = false;
 
             // Turn off the vertical sync to acheive even higher framerates at the cost of tearing issues.
+            // This means the screen will be redrawn as fast as possible, possibly several thousand frames per second, so you need to think about it. :-)
             graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
         }
