@@ -17,7 +17,7 @@ This version has several smaller (and bigger) changes:
 * Enabled mipmapping. Created an array of objects with position and scale to show the effect of scaling down a texture with mipmapping enabled.
 
 # V1.4
-Fullscreen mode with different resolutions, windowed mode with different sizes and resizing window by user.
+Fullscreen mode with different resolutions, windowed mode with different sizes and free resizing. 
 See lines 42-46 in ShootThemAllGame.cs, they let you test fullscreen and windowed mode quickly.
 
 # V1.3
