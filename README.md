@@ -9,7 +9,9 @@ Please note that you must install .NET Core 3.1 Runtime (LTS) for monogame to co
 
 # V1.6
 Now we are working with Matrixes to position and rotate sprites around a center. 
+
 Please note that this version is stripped clean down to about V1.1 in order to keep the code as clean as possible. 
+
 See lines 88 to 117 in ShootThemAllGame.cs, where the magic happens.
 
 # V1.5
