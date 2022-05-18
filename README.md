@@ -7,6 +7,11 @@ This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: ht
 
 Please note that you must install .NET Core 3.1 Runtime (LTS) for monogame to compile.
 
+# V1.6
+Now we are working with Matrixes to position and rotate sprites around a center. 
+Please note that this version is stripped clean down to about V1.1 in order to keep the code as clean as possible. 
+See lines 88 to 117 in ShootThemAllGame.cs, where the magic happens.
+
 # V1.5
 This version has several smaller (and bigger) changes:
 * GetDisplayModeBestMatch(w,h) which gives the lowest available resolution equalling or larger than the requested w,h, or the largest possible resolution if w,h cannot be satisfied.
