@@ -7,7 +7,7 @@ This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: ht
 
 Please note that you must install .NET Core 3.1 Runtime (LTS) for monogame to compile.
 
-# V1.6
+# V1.7
 Using the matrix rotation to rotate some objects around a center on the screen. See the RotateSomeSkulls() function. The matrix is sent to the spriteBatch.Begin() function and affects all Draw() calls afterwards. 
 
 * Please see how I position the objects in the LoadContent(), this helps spreading the objects around the rotated center.
