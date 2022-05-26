@@ -5,7 +5,7 @@ Each version can be found as a git tag, making it easy to get started if you are
 
 This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: https://github.com/MonoGame/MonoGame.Samples
 
-Please note that you must install .NET Core 3.1 Runtime (LTS) for monogame to compile.
+Please note that you might need to install .NET Core 3.1 Runtime (LTS) for monogame to compile. 
 
 # V1.7
 Using the matrix rotation to rotate some objects around a center on the screen. See the RotateSomeSkulls() function. The matrix is sent to the spriteBatch.Begin() function and affects all Draw() calls afterwards. 
