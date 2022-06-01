@@ -28,6 +28,12 @@
 
 /build:Art/snail.png
 /build:Art/spontaneous.png
+/build:Art/star_map.png
+/build:Art/Sagittarius.png
+/build:Art/Cassiopeia.png
+/build:Art/Eridanus.png
+/build:Art/Corvus.png
+/build:Art/Grus.png
 
 #Settings for font.
 /importer:FontDescriptionImporter

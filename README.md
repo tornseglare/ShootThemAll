@@ -7,6 +7,15 @@ This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: ht
 
 Please note that you might need to install .NET Core 3.1 Runtime (LTS) for monogame to compile. 
 
+# V1.8
+The Matrix' Rotation, Scale and Translation functions explained in one (three) great example(s). 
+
+We have a rotating map with some signs showing five stars in a google maps point-style. 
+
+* Please look at the multiplication order of the matrixes as it is important. 
+* Also take a look at the rotation center of the star signs as well as the 'anti-rotation' of them to keep them straight.
+* The DrawFlower() and DrawCircleAndAxis() are a bit experimental but well worth examining.
+
 # V1.7
 Using the matrix rotation to rotate some objects around a center on the screen. See the RotateSomeSkulls() function. The matrix is sent to the spriteBatch.Begin() function and affects all Draw() calls afterwards. 
 

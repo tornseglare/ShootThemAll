@@ -10,11 +10,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShootThemAll
 {
-    public class PositionScaleRotation
+    public struct PositionTexture
     {
         public Vector2 position;
-        public float scale;
-        public float rotation;
+        public Vector2 center;
+        public Texture2D texture;
     }
 
     public class ShootThemAllGame : Game
@@ -22,25 +22,21 @@ namespace ShootThemAll
         readonly GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        readonly int windowedWidth = 700;
-        readonly int windowedHeight = 700;
+        // Set to true to draw the nice flower instead of the galaxy.
+        readonly bool experimentalFlower = false;
 
-        float angle = 0.0f;
-        float theScale = 2.5f;
-        float growShrink = 1.0f;
-
-        readonly double fullCircle = Math.PI * 2.0f; // equals 360 degrees, but expressed in radians.
+        readonly int windowedWidth = 1000;
+        readonly int windowedHeight = 1000;
         readonly Random randomizer = new();
 
-        readonly List<PositionScaleRotation> things = new();
+        float flowerScale = 2.5f;
+        float growShrink = 1.0f;
 
-        Vector2 snailRotCenter;
-        List<Vector2> positions = new();
-        Rectangle snailFace = new Rectangle(250, 60, 160, 160);
-        Color color = new Color(255, 32, 89, 255);
+        readonly List<PositionTexture> signPositions = new();
+        Color signColor = new(255, 255, 255, 210);
 
-        float mapRot = 0;
-        Color mapColor = new Color(0, 255, 255, 255);
+        float mapRot = 0.0f;
+        Color mapColor = new(0, 255, 255, 255);
         Vector2 mapCenter;
 
         public ShootThemAllGame()
@@ -81,29 +77,24 @@ namespace ShootThemAll
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Art.Load(Content);
 
-            int top = -windowedHeight / 2;// + Art.Skull.Height;
-            int bottom = windowedHeight / 2 - Art.Skull.Height;
-            int left = -windowedWidth / 2;// + Art.Skull.Width;
-            int right = windowedWidth / 2 - Art.Skull.Width;
+            int w = Art.StarMap.Width / 2;
+            int h = Art.StarMap.Height / 2;
+            mapCenter = new(w, h);
 
-            for (int i = 0; i < 10; i++)
+            // We want the signs rotation center to be at the center-bottom where the arrow is.
+            Vector2 signCenter = new(Art.Eridanus.Width / 2, Art.Eridanus.Height);
+
+            // Add five star signs spread out over the galaxy.
+            signPositions.Add(new PositionTexture()
             {
-                things.Add(new PositionScaleRotation()
-                {
-                    position = new Vector2(randomizer.Next(left, right), randomizer.Next(top, bottom)),
-                    rotation = 0.0f,
-                    scale = 1.0f
-                });
-            }
-
-            snailRotCenter = new Vector2(snailFace.Width / 2, snailFace.Height / 2);
-
-            for (int i = 0; i < 7; i++)
-            {
-                positions.Add(new Vector2(randomizer.Next(-150, 150), randomizer.Next(-150, 150)));
-            }
-
-            mapCenter = new(Art.Snail.Width / 2, Art.Snail.Height / 2);
+                position = new(randomizer.Next(-w, w), randomizer.Next(-h, h)),
+                texture = Art.Eridanus,
+                center = signCenter,
+            });
+            signPositions.Add(new PositionTexture() { position = new(randomizer.Next(-w, w), randomizer.Next(-h, h)), texture = Art.Sagittarius, center = signCenter });
+            signPositions.Add(new PositionTexture() { position = new(randomizer.Next(-w, w), randomizer.Next(-h, h)), texture = Art.Cassiopeia, center = signCenter });
+            signPositions.Add(new PositionTexture() { position = new(randomizer.Next(-w, w), randomizer.Next(-h, h)), texture = Art.Corvus , center = signCenter });
+            signPositions.Add(new PositionTexture() { position = new(randomizer.Next(-w, w), randomizer.Next(-h, h)), texture = Art.Grus , center = signCenter });
 
             base.LoadContent();
         }
@@ -112,94 +103,74 @@ namespace ShootThemAll
         {
             base.Update(gameTime);
 
-            angle += (float)(fullCircle / (3600.0d * 2) * gameTime.ElapsedGameTime.TotalMilliseconds);
-
-            if (angle > fullCircle)
-                angle -= (float)fullCircle;
-            if(angle < 0)
-                angle += (float)fullCircle;
-
-            // Let the scale grow and shrink over time.
-            //theScale += growShrink * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 99;
-
-            if (theScale > 2.0f)
-            {
-                growShrink = -1.0f;
-                theScale = 2.0f;
-            }
-            else if(theScale < 0.1f)
-            {
-                growShrink = 1.0f;
-                theScale = 0.1f;
-            }
-
             mapRot += 0.01f;
+
+            if(experimentalFlower)
+                UpdateFlower(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            //RotateSomeSkulls();
-            DrawLoadsOfStuff2(gameTime);
-
-            /*// Some experiments. If you want to test them, comment out the line above and uncomment this.
-            
-            // Turn off the clearing to see the things drawn over time.
-            //GraphicsDevice.Clear(Color.Black);
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-
-            DrawSomeSkulls();
-            DrawFlower();
-            DrawCircleAndAxis();
-
-            spriteBatch.End();*/
+            if (experimentalFlower)
+            {
+                DrawFlower();
+                DrawCircleAndAxis();
+            }
+            else
+            {
+                DrawRotatingMap();
+            }
 
             base.Draw(gameTime);
         }
 
-        // Best with the intro-minute of Pink Floyds "Coming back to life". ;-)
-        private void DrawSomeSkulls()
-        {
-            Matrix positionMatrix = Matrix.CreateTranslation(300.0f, 300.0f, 0.0f);
-
-            positionMatrix *= Matrix.CreateRotationZ(angle);
-
-            Vector3 v3position = Vector3.Transform(Vector3.One, positionMatrix);
-
-            Vector2 position = new(v3position.X, v3position.Y);
-
-            foreach (PositionScaleRotation thing in things)
-            {
-                spriteBatch.Draw(Art.Skull, thing.position + position, Color.White);
-            }
-        }
-
-        // Rotate the matrix around its 'center', move the rotation center to the center of the screen, 
-        // then draw the skulls. Since their positions are randomized around this center they will 
-        // rotate around it nicely. 
-        // 
-        private void RotateSomeSkulls()
+        void DrawRotatingMap()
         {
             GraphicsDevice.Clear(Color.Black);
 
-            //Matrix rotationMatrix = Matrix.Identity;
-            Matrix rotationMatrix = Matrix.CreateRotationZ(angle);
-            Matrix positionMatrix = Matrix.CreateTranslation(windowedWidth / 2, windowedHeight / 2, 0.0f);
+            Matrix RotMatrix = Matrix.CreateRotationZ(mapRot);
+            Matrix ScaleMatrix = Matrix.CreateScale(0.8f);
+            Matrix PosMatrix = Matrix.CreateTranslation(500, 500, 0);
 
-            rotationMatrix *= positionMatrix;
+            // The multiplication order is important when working with Matrixes, if you change the order you get entire different results. 
+            // 
+            // RotMatrix * ScaleMatrix * PosMatrix can be translated into: 
+            // * Rotate the 'world'. (all images are rotated around 0,0)
+            // * Scale the world. (scaling down all the images)
+            // * Move the world 500,500 pixels. (This is not scaled down as we put it last in the multiplication)
+            // 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, null, null, RotMatrix * ScaleMatrix * PosMatrix);
 
-            spriteBatch.Begin(
-                SpriteSortMode.Deferred, 
-                BlendState.NonPremultiplied, 
-                null, null, null, null,
-                rotationMatrix);
+            // The map image is rotated around its own center.
+            spriteBatch.Draw(Art.StarMap, Vector2.Zero, null, mapColor, 0, mapCenter, 1.0f, 0, 0);
 
-            foreach (PositionScaleRotation thing in things)
+            // The map icons follows the map rotation. To make it look more google-maps alike their images are not rotated but kept straight.
+            foreach (PositionTexture pt in signPositions)
             {
-                spriteBatch.Draw(Art.Skull, thing.position, Color.White);
+                // We 'undo' the rotation of the images by subtracting the angle here. If you leave angle at zero the images will be rotated too.
+                spriteBatch.Draw(pt.texture, pt.position, null, signColor, -mapRot, pt.center, 0.6f, 0, 0);
             }
 
             spriteBatch.End();
+        }
+
+        private void UpdateFlower(GameTime gameTime)
+        {
+            flowerScale -= 0.01f;
+
+            // Let the scale grow and shrink over time.
+            flowerScale += growShrink * (float)gameTime.ElapsedGameTime.TotalMilliseconds / 99;
+
+            if (flowerScale > 2.0f)
+            {
+                growShrink = -1.0f;
+                flowerScale = 2.0f;
+            }
+            else if (flowerScale < 0.1f)
+            {
+                growShrink = 1.0f;
+                flowerScale = 0.1f;
+            }
         }
 
         // Draw a circle, but change the radius while drawing it. Turns into a flower. :-) 
@@ -218,10 +189,10 @@ namespace ShootThemAll
             Matrix rotationMatrix = Matrix.CreateTranslation(stick);
 
             // Rotate the matrix.
-            rotationMatrix *= Matrix.CreateRotationZ(angle);
+            rotationMatrix *= Matrix.CreateRotationZ(mapRot);
 
             // Scale the rotated stick. The scale matrix is scaling all three dimensions, but we use only x and y.
-            Matrix scaleMatrix = Matrix.CreateScale(theScale);
+            Matrix scaleMatrix = Matrix.CreateScale(flowerScale);
             rotationMatrix *= scaleMatrix;
 
             positionMatrix += rotationMatrix;
@@ -232,7 +203,9 @@ namespace ShootThemAll
             // spriteBatch.Draw() must have a Vector2 so transfer the coordinates.
             Vector2 xStickPosition = new(v3position.X + randomizer.NextSingle() / 1.0f, v3position.Y + randomizer.NextSingle() / 1.0f);
 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             spriteBatch.Draw(Art.Pixel, xStickPosition, Color.White);
+            spriteBatch.End();
         }
 
         // Draw 4 pixels showing the axis movements.
@@ -243,54 +216,27 @@ namespace ShootThemAll
             Vector2 origPosition = new(v3position.X, v3position.Y);
 
             Matrix rotationMatrix = Matrix.CreateTranslation(new(80, 0, 0));
-            rotationMatrix *= Matrix.CreateRotationY(angle);
+            rotationMatrix *= Matrix.CreateRotationY(mapRot);
             v3position = Vector3.Transform(Vector3.One, positionMatrix + rotationMatrix);
             Vector2 xStickPosition = new(v3position.X, v3position.Y);
 
             rotationMatrix = Matrix.CreateTranslation(new(0, 80, 0));
-            rotationMatrix *= Matrix.CreateRotationX(angle - (float)Math.PI / 2);
+            rotationMatrix *= Matrix.CreateRotationX(mapRot - (float)Math.PI / 2);
             v3position = Vector3.Transform(Vector3.One, positionMatrix + rotationMatrix);
             Vector2 yStickPosition = new(v3position.X, v3position.Y);
 
             rotationMatrix = Matrix.CreateTranslation(new(80, 0, 0));
-            rotationMatrix *= Matrix.CreateRotationZ(angle);
+            rotationMatrix *= Matrix.CreateRotationZ(mapRot);
             v3position = Vector3.Transform(Vector3.One, positionMatrix + rotationMatrix);
             Vector2 zStickPosition = new(v3position.X, v3position.Y);
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             // Decided to draw a single pixel to make the movement pattern clearer than using a fuzzy skull. Replace with Skull if its too tiny.
             spriteBatch.Draw(Art.Pixel, origPosition, Color.White);
             spriteBatch.Draw(Art.Pixel, xStickPosition, Color.Blue);
             spriteBatch.Draw(Art.Pixel, yStickPosition, Color.Red);
             spriteBatch.Draw(Art.Pixel, zStickPosition, Color.Green);
-        }
-
-        void DrawLoadsOfStuff2(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Black);
-
-            Matrix PosMatrix = Matrix.CreateTranslation(300, 200, 0);
-            Matrix RotMatrix = Matrix.CreateRotationZ(mapRot);
-            //Matrix RotCenterMatrix = Matrix.CreateTranslation(cameraPosition.X, cameraPosition.Y, 0);
-            Matrix ScaleMatrix = Matrix.CreateScale(0.6f);
-
-            // The multiplication order is important when working with Matrixes, if you change the order you get entire different results. 
-            // 
-            // RotMatrix * ScaleMatrix * PosMatrix can be translated into: 
-            // * Rotate the 'world'. (all images are rotated around 0,0)
-            // * Scale the world. (scaling down all the images)
-            // * Move the world 300,200 pixels. (This is not scaled down as we put it last in the multiplication)
-            // 
-            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Opaque, null, null, null, null, RotMatrix * ScaleMatrix * PosMatrix);
-
-            // The map image is rotated around its own center.
-            spriteBatch.Draw(Art.Snail, Vector2.Zero, null, mapColor, 0, mapCenter, 1.0f, 0, 0);
-
-            // The map icons follows the map rotation. To make it look more google-maps alike their images are not rotated but kept straight.
-            foreach (Vector2 pos in positions)
-            {
-                // We 'undo' the rotation of the images by subtracting the angle snailRot here. If you leave angle at zero the images will be rotated too.
-                spriteBatch.Draw(Art.Snail, pos, snailFace, color, -mapRot, snailRotCenter, 0.7f, 0, 0);
-            }
 
             spriteBatch.End();
         }
