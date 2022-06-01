@@ -34,6 +34,15 @@ namespace ShootThemAll
 
         readonly List<PositionScaleRotation> things = new();
 
+        Vector2 snailRotCenter;
+        List<Vector2> positions = new();
+        Rectangle snailFace = new Rectangle(250, 60, 160, 160);
+        Color color = new Color(255, 32, 89, 255);
+
+        float mapRot = 0;
+        Color mapColor = new Color(0, 255, 255, 255);
+        Vector2 mapCenter;
+
         public ShootThemAllGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -87,6 +96,15 @@ namespace ShootThemAll
                 });
             }
 
+            snailRotCenter = new Vector2(snailFace.Width / 2, snailFace.Height / 2);
+
+            for (int i = 0; i < 7; i++)
+            {
+                positions.Add(new Vector2(randomizer.Next(-150, 150), randomizer.Next(-150, 150)));
+            }
+
+            mapCenter = new(Art.Snail.Width / 2, Art.Snail.Height / 2);
+
             base.LoadContent();
         }
 
@@ -114,11 +132,14 @@ namespace ShootThemAll
                 growShrink = 1.0f;
                 theScale = 0.1f;
             }
+
+            mapRot += 0.01f;
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            RotateSomeSkulls();
+            //RotateSomeSkulls();
+            DrawLoadsOfStuff2(gameTime);
 
             /*// Some experiments. If you want to test them, comment out the line above and uncomment this.
             
@@ -241,6 +262,37 @@ namespace ShootThemAll
             spriteBatch.Draw(Art.Pixel, xStickPosition, Color.Blue);
             spriteBatch.Draw(Art.Pixel, yStickPosition, Color.Red);
             spriteBatch.Draw(Art.Pixel, zStickPosition, Color.Green);
+        }
+
+        void DrawLoadsOfStuff2(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Black);
+
+            Matrix PosMatrix = Matrix.CreateTranslation(300, 200, 0);
+            Matrix RotMatrix = Matrix.CreateRotationZ(mapRot);
+            //Matrix RotCenterMatrix = Matrix.CreateTranslation(cameraPosition.X, cameraPosition.Y, 0);
+            Matrix ScaleMatrix = Matrix.CreateScale(0.6f);
+
+            // The multiplication order is important when working with Matrixes, if you change the order you get entire different results. 
+            // 
+            // RotMatrix * ScaleMatrix * PosMatrix can be translated into: 
+            // * Rotate the 'world'. (all images are rotated around 0,0)
+            // * Scale the world. (scaling down all the images)
+            // * Move the world 300,200 pixels. (This is not scaled down as we put it last in the multiplication)
+            // 
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Opaque, null, null, null, null, RotMatrix * ScaleMatrix * PosMatrix);
+
+            // The map image is rotated around its own center.
+            spriteBatch.Draw(Art.Snail, Vector2.Zero, null, mapColor, 0, mapCenter, 1.0f, 0, 0);
+
+            // The map icons follows the map rotation. To make it look more google-maps alike their images are not rotated but kept straight.
+            foreach (Vector2 pos in positions)
+            {
+                // We 'undo' the rotation of the images by subtracting the angle snailRot here. If you leave angle at zero the images will be rotated too.
+                spriteBatch.Draw(Art.Snail, pos, snailFace, color, -mapRot, snailRotCenter, 0.7f, 0, 0);
+            }
+
+            spriteBatch.End();
         }
     }
 }
