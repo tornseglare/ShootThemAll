@@ -7,6 +7,9 @@ This code is rebuilt from the NeonShooter demo by SimonDarksideJ, found here: ht
 
 Please note that you might need to install .NET Core 3.1 Runtime (LTS) for monogame to compile. 
 
+# V1.9
+To complete the camera the way I wanted it, it now travels between the stars. The camera center is moving from star to star. 
+
 # V1.8
 The Matrix' Rotation, Scale and Translation functions explained in one (three) great example(s). 
 
